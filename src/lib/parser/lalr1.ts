@@ -14,6 +14,8 @@ export function compute_lalr(
   g: Grammar,
   first: Map<string, Set<string>>
 ): {
+  states: LR1State[]
+  transitions: Map<string, number>
   action: Map<string, LRAction>
   goto: Map<string, number>
   conflicts: string[]
@@ -97,5 +99,5 @@ export function compute_lalr(
     }
   }
 
-  return { action, goto, conflicts };
+  return { states: merged_states, transitions: merged_transitions, action, goto, conflicts };
 }

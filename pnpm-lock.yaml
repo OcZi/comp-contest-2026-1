@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@hpcc-js/wasm-graphviz':
+        specifier: ^1.21.5
+        version: 1.21.5
     devDependencies:
       '@eslint/compat':
         specifier: ^2.0.4
@@ -148,6 +152,9 @@ packages:
 
   '@fontsource/fira-mono@5.2.7':
     resolution: {integrity: sha512-wYrAn6i3nH6luqQBZxtWUpl4UTUvs9AEbEeZxksPMwIqyjRRaxHTNW3c2VfM50gabS2IS7pT8lVWS2USB4ukYA==}
+
+  '@hpcc-js/wasm-graphviz@1.21.5':
+    resolution: {integrity: sha512-rgFx1A5gd1BdMrLkrKg44cdOjTvEQVWODf1PDTwgiKDfmJioD+tyoMBvmEJdH6OC7rh1JaeqFJ2+r92F1Ip/sA==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -1406,6 +1413,8 @@ snapshots:
       levn: 0.4.1
 
   '@fontsource/fira-mono@5.2.7': {}
+
+  '@hpcc-js/wasm-graphviz@1.21.5': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

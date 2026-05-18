@@ -35,7 +35,10 @@ function closure_lr1(
       }
       if (!firstB.has('ε')) { allEpsilon = false; break; }
     }
-    if (allEpsilon) lookaheads.add('ε');
+    // Si β deriva ε, usar el lookahead original del item
+    if (allEpsilon && item.lookahead) {
+      lookaheads.add(item.lookahead);
+    }
 
     // agrega items para cada producción de sym
     for (const prod of g.productions) {
