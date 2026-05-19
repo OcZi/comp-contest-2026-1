@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import * as gram from './grammar';
 	import { compute_first, compute_follow } from '$lib/algorithms/algorithms';
 	import { compute_ll1_safe } from '$lib/parser/ll1';
@@ -42,14 +43,50 @@
 		}
 	});
 
-	function hashGrammar(raw: string): string {
-		let hash = 0;
-		const normalized = raw.replace(/\s+/g, '');
-		for (let i = 0; i < normalized.length; i++) {
-			hash = (Math.imul(31, hash) + normalized.charCodeAt(i)) | 0;
+	function encodeGrammar(raw: string): string {
+		try {
+			// Compact representation for sharing
+			return btoa(encodeURIComponent(raw));
+		} catch (e) {
+			return '';
 		}
-		return Math.abs(hash).toString(16).padStart(8, '0');
 	}
+
+	function decodeGrammar(encoded: string): string {
+		try {
+			return decodeURIComponent(atob(encoded));
+		} catch (e) {
+			return '';
+		}
+	}
+
+	onMount(() => {
+		if (browser) {
+			const urlParams = new URLSearchParams(window.location.search);
+			const g = urlParams.get('g');
+			if (g) {
+				const decoded = decodeGrammar(g);
+				if (decoded) {
+					rawGrammarInput = decoded;
+					isRawMode = true;
+					const parts = decoded
+						.split(';')
+						.map((p) => p.trim())
+						.filter(Boolean);
+					productions = parts.map((text) => {
+						const id = prodId++;
+						return { id, text };
+					});
+					if (productions.length === 0) {
+						const id = prodId++;
+						productions = [{ id, text: 'S -> ' }];
+					}
+					// Parse loaded grammar automatically
+					runParser();
+				}
+			}
+		}
+	});
 
 	function toggleRawMode() {
 		if (isRawMode) {
@@ -558,7 +595,12 @@
 			return;
 		}
 
-		sessionId = hashGrammar(raw + selectedParser + selectedMode);
+		sessionId = encodeGrammar(raw);
+		if (browser) {
+			const newUrl = new URL(window.location.href);
+			newUrl.searchParams.set('g', sessionId);
+			window.history.replaceState({}, '', newUrl.toString());
+		}
 
 		if (!grammarHistory.includes(raw)) {
 			grammarHistory = [raw, ...grammarHistory].slice(0, 50);
@@ -816,7 +858,7 @@
 				class:active={activeTab === 'summary'}
 				onclick={() => (activeTab = 'summary')}
 			>
-				Grammar summary {#if sessionId}<span class="session-id">(ID: {sessionId})</span>{/if}
+				Grammar summary
 			</button>
 			{#if firstData && followData}
 				<button
@@ -1631,7 +1673,7 @@
 	.keyboard-row {
 		display: flex;
 		justify-content: space-between;
-		align-items: flex-start;
+		align-items: stretch;
 		margin-bottom: 1rem;
 		gap: 1.5rem;
 	}
@@ -1640,23 +1682,19 @@
 		flex: 1.5;
 		display: flex;
 		flex-direction: column;
-		border: 1px solid #ced4da;
-		border-radius: 8px;
+		border-radius: 1.5rem;
 		background: #fff;
-		height: 160px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+		padding: 1rem;
+		box-sizing: border-box;
 	}
 
 	.history-title {
-		padding: 0.5rem 0.75rem;
-		font-weight: 600;
-		font-size: 0.85rem;
-		background: #f8f9fa;
-		border-bottom: 1px solid #ced4da;
-		border-radius: 8px 8px 0 0;
+		font-size: 1.5rem;
+		font-weight: bold;
+		text-align: left;
+		margin: 0 0 0.5rem 0;
+		padding: 0;
 		color: #212529;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 	}
 
 	.history-list {
@@ -1664,32 +1702,42 @@
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
+		gap: 0.35rem;
+		max-height: 90px;
 	}
 
 	.history-item {
-		padding: 0.6rem 0.75rem;
-		border: none;
-		background: transparent;
+		padding: 0.4rem 0.75rem;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background: #f9f9f9;
 		text-align: left;
 		font-family: 'Fira Mono', monospace;
-		font-size: 0.85rem;
-		color: #495057;
+		font-size: 0.8rem;
+		color: #212529;
 		cursor: pointer;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		border-bottom: 1px solid #f1f3f5;
-		transition: all 0.2s ease;
+		transition: background 0.2s, padding-left 0.2s;
 	}
 
 	.history-item:hover {
-		background: #e3f2fd;
-		color: #0d6efd;
+		background: #e0e0e0;
 		padding-left: 1rem;
 	}
 
-	.history-item:last-child {
-		border-bottom: none;
+	@media (max-width: 768px) {
+		.keyboard-row {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 1rem;
+		}
+
+		.history-container {
+			flex: none;
+			width: 100%;
+		}
 	}
 
 	.toggle-raw-btn {
@@ -1702,11 +1750,6 @@
 		cursor: pointer;
 		white-space: nowrap;
 		transition: all 0.2s ease;
-	}
-
-	.toggle-raw-btn:hover {
-		background-color: #e9ecef;
-		border-color: #adb5bd;
 	}
 
 	.toggle-raw-btn:hover {

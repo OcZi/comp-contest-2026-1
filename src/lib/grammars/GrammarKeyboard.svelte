@@ -51,6 +51,11 @@
 		grid-template-columns: repeat(10, 1fr);
 		gap: 0.5rem;
 	}
+	@media (max-width: 768px) {
+		.symbols-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
 	.symbol-btn {
 		padding: 0.5rem 1rem;
 		border: 1px solid #ccc;
