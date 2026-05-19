@@ -713,6 +713,44 @@
 			error = e.message || 'Error al procesar';
 		}
 	}
+
+	async function downloadTab(format: 'png' | 'pdf') {
+		const element = document.getElementById('active-tab-content');
+		if (!element) return;
+
+		try {
+			const html2canvasModule = await import('html2canvas');
+			const html2canvas = html2canvasModule.default;
+			const canvas = await html2canvas(element, {
+				scale: 2,
+				useCORS: true,
+				backgroundColor: '#ffffff'
+			});
+
+			const imgData = canvas.toDataURL('image/png');
+			const fileName = `grammar-parser-${activeTab}-${Date.now()}`;
+
+			if (format === 'png') {
+				const link = document.createElement('a');
+				link.download = `${fileName}.png`;
+				link.href = imgData;
+				link.click();
+			} else if (format === 'pdf') {
+				const jspdfModule = await import('jspdf');
+				const jsPDF = jspdfModule.jsPDF;
+				const pdf = new jsPDF({
+					orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+					unit: 'px',
+					format: [canvas.width, canvas.height]
+				});
+				pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+				pdf.save(`${fileName}.pdf`);
+			}
+		} catch (e) {
+			console.error('Error exporting tab:', e);
+			alert('Failed to export tab: ' + e);
+		}
+	}
 </script>
 
 <div class="grammar-input">
@@ -852,59 +890,71 @@
 	{/if}
 
 	{#if result}
-		<div class="tabs">
-			<button
-				class="tab"
-				class:active={activeTab === 'summary'}
-				onclick={() => (activeTab = 'summary')}
-			>
-				Grammar summary
-			</button>
-			{#if firstData && followData}
+		<div class="tabs-container">
+			<div class="tabs">
 				<button
 					class="tab"
-					class:active={activeTab === 'first_follow'}
-					onclick={() => (activeTab = 'first_follow')}>First / Follow</button
+					class:active={activeTab === 'summary'}
+					onclick={() => (activeTab = 'summary')}
 				>
-			{/if}
-			{#if selectedParser === 'll1' || selectedParser === 'lr0' || selectedParser === 'lr1' || selectedParser === 'lalr1'}
+					Grammar summary
+				</button>
+				{#if firstData && followData}
+					<button
+						class="tab"
+						class:active={activeTab === 'first_follow'}
+						onclick={() => (activeTab = 'first_follow')}>First / Follow</button
+					>
+				{/if}
+				{#if selectedParser === 'll1' || selectedParser === 'lr0' || selectedParser === 'lr1' || selectedParser === 'lalr1'}
+					<button
+						class="tab"
+						class:active={activeTab === 'table'}
+						onclick={() => (activeTab = 'table')}>Parsing Table</button
+					>
+				{/if}
+				{#if selectedParser === 'lr0' || selectedParser === 'lr1' || selectedParser === 'lalr1'}
+					<button
+						class="tab"
+						class:active={activeTab === 'items'}
+						onclick={() => (activeTab = 'items')}>LR Items</button
+					>
+				{/if}
+				{#if selectedParser === 'lr0' || selectedParser === 'lr1' || selectedParser === 'lalr1'}
+					<button class="tab" class:active={activeTab === 'goto'} onclick={() => (activeTab = 'goto')}
+						>AFN</button
+					>
+				{/if}
+				{#if selectedParser === 'descent' && astSvg}
+					<button class="tab" class:active={activeTab === 'ast'} onclick={() => (activeTab = 'ast')}
+						>AST</button
+					>
+				{/if}
+				{#if inputString.trim().length > 0}
+					<button
+						class="tab"
+						class:active={activeTab === 'steps'}
+						onclick={() => (activeTab = 'steps')}>Steps</button
+					>
+				{/if}
 				<button
-					class="tab"
-					class:active={activeTab === 'table'}
-					onclick={() => (activeTab = 'table')}>Parsing Table</button
+					class="tab tab-raw"
+					class:active={activeTab === 'raw'}
+					onclick={() => (activeTab = 'raw')}>JSON</button
 				>
-			{/if}
-			{#if selectedParser === 'lr0' || selectedParser === 'lr1' || selectedParser === 'lalr1'}
-				<button
-					class="tab"
-					class:active={activeTab === 'items'}
-					onclick={() => (activeTab = 'items')}>LR Items</button
-				>
-			{/if}
-			{#if selectedParser === 'lr0' || selectedParser === 'lr1' || selectedParser === 'lalr1'}
-				<button class="tab" class:active={activeTab === 'goto'} onclick={() => (activeTab = 'goto')}
-					>AFN</button
-				>
-			{/if}
-			{#if selectedParser === 'descent' && astSvg}
-				<button class="tab" class:active={activeTab === 'ast'} onclick={() => (activeTab = 'ast')}
-					>AST</button
-				>
-			{/if}
-			{#if inputString.trim().length > 0}
-				<button
-					class="tab"
-					class:active={activeTab === 'steps'}
-					onclick={() => (activeTab = 'steps')}>Steps</button
-				>
-			{/if}
-			<button
-				class="tab tab-raw"
-				class:active={activeTab === 'raw'}
-				onclick={() => (activeTab = 'raw')}>JSON</button
-			>
+			</div>
+			<div class="export-actions">
+				<button class="export-btn png-btn" onclick={() => downloadTab('png')}>
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					PNG
+				</button>
+				<button class="export-btn pdf-btn" onclick={() => downloadTab('pdf')}>
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					PDF
+				</button>
+			</div>
 		</div>
-		<div class="tab-content">
+		<div class="tab-content" id="active-tab-content">
 			{#if activeTab === 'summary'}
 				<div class="grammar-summary">
 					{#if parsedGrammar}
@@ -1322,10 +1372,16 @@
 		font-size: 0.9rem;
 	}
 
+	.tabs-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		border-bottom: 2px solid #e9ecef;
+		margin-top: 1.5rem;
+	}
+
 	.tabs {
 		display: flex;
-		border-bottom: 2px solid #e9ecef;
-		margin-top: 1rem;
 		gap: 0.25rem;
 	}
 
@@ -1350,6 +1406,37 @@
 	.tab.active {
 		color: #4a90d9;
 		border-bottom-color: #4a90d9;
+	}
+
+	.export-actions {
+		display: flex;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.export-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.4rem 0.8rem;
+		border: 1px solid #ced4da;
+		border-radius: 6px;
+		background: #fff;
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: #495057;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.export-btn:hover {
+		background: #f8f9fa;
+		border-color: #adb5bd;
+		color: #212529;
+	}
+
+	.export-btn svg {
+		flex-shrink: 0;
 	}
 
 	.tab-content {
@@ -1707,12 +1794,13 @@
 	}
 
 	.history-item {
+		flex-shrink: 0;
 		padding: 0.4rem 0.75rem;
 		border: 1px solid #ccc;
 		border-radius: 4px;
 		background: #f9f9f9;
 		text-align: left;
-		font-family: 'Fira Mono', monospace;
+		font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 		font-size: 0.8rem;
 		color: #212529;
 		cursor: pointer;
@@ -1737,6 +1825,35 @@
 		.history-container {
 			flex: none;
 			width: 100%;
+		}
+
+		.tabs-container {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 0.5rem;
+			border-bottom: none;
+		}
+
+		.tabs {
+			overflow-x: auto;
+			border-bottom: 2px solid #e9ecef;
+			padding-bottom: 2px;
+			white-space: nowrap;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.export-actions {
+			display: flex;
+			width: 100%;
+			margin-top: 0.25rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.export-btn {
+			flex: 1;
+			justify-content: center;
+			padding: 0.6rem;
+			font-size: 0.9rem;
 		}
 	}
 

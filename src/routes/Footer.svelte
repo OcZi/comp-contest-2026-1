@@ -3,11 +3,8 @@
 </script>
 
 <footer>
-	<p>
-		Compilers Contest
-		@ UTEC CS4100
-	</p>
-    <a href="https://github.com/sveltejs/kit">
+	<p>Compilers Contest @ UTEC CS3025</p>
+	<a href="https://github.com/sveltejs/kit">
 		<img src={github} alt="GitHub" />
 	</a>
 </footer>
@@ -19,7 +16,7 @@
 		justify-content: center;
 		align-items: center;
 		padding: 12px;
-        gap: 12px
+		gap: 12px;
 	}
 
 	footer a {
