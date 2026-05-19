@@ -139,7 +139,15 @@ export function compute_lr1_table(
 
   const set = (key: string, val: LRAction) => {
     if (action.has(key)) {
-      conflicts.push(`Conflicto LR(1) en ${key}`);
+      const existing = action.get(key)!;
+      if (existing.type === val.type) {
+        if (existing.type === 'shift' && val.type === 'shift' && existing.state === val.state) return;
+        if (existing.type === 'reduce' && val.type === 'reduce' && 
+            existing.prod.parent === val.prod.parent && existing.alt.join('') === val.alt.join('')) return;
+      }
+      if (!conflicts.includes(`Conflicto LR(1) en ${key}`)) {
+        conflicts.push(`Conflicto LR(1) en ${key}`);
+      }
     } else {
       action.set(key, val);
     }

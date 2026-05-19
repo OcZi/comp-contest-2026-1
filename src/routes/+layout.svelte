@@ -7,6 +7,10 @@
 	let { children } = $props();
 </script>
 
+<svelte:head>
+  <title>Parser collection UTEC</title>
+</svelte:head>
+
 <div class="app">
 	<Header />
 	<main>{@render children()}</main>

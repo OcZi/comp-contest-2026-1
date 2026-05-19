@@ -1,6 +1,5 @@
 <script>
-	import GrammarInput from "$lib/grammars/GrammarInput.svelte";
-
+  import GrammarInput from "$lib/grammars/GrammarInput.svelte";
 </script>
 
 <div>

@@ -126,7 +126,15 @@ export function compute_lr0_table(
 
   const set = (key: string, val: LR0Action) => {
     if (action.has(key)) {
-      conflicts.push(`Conflicto LR(0) en ${key}`);
+      const existing = action.get(key)!;
+      if (existing.type === val.type) {
+        if (existing.type === 'shift' && val.type === 'shift' && existing.state === val.state) return;
+        if (existing.type === 'reduce' && val.type === 'reduce' && 
+            existing.prod.parent === val.prod.parent && existing.alt.join('') === val.alt.join('')) return;
+      }
+      if (!conflicts.includes(`Conflicto LR(0) en ${key}`)) {
+        conflicts.push(`Conflicto LR(0) en ${key}`);
+      }
     } else {
       action.set(key, val);
     }
