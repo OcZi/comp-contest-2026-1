@@ -1,6 +1,5 @@
 <script lang="ts">
-
-	import Footer from "./Footer.svelte"
+	import Footer from './Footer.svelte';
 	import Header from './Header.svelte';
 	import './layout.css';
 
@@ -8,19 +7,17 @@
 </script>
 
 <svelte:head>
-  <title>Parser collection UTEC</title>
+	<title>Parser collection UTEC</title>
 </svelte:head>
 
 <div class="app">
 	<Header />
 	<main>{@render children()}</main>
 
-	<Footer/>
+	<Footer />
 </div>
 
-<div style="display:none">
-
-</div>
+<div style="display:none"></div>
 
 <style>
 	.app {
@@ -39,5 +36,4 @@
 		margin: 0 auto;
 		box-sizing: border-box;
 	}
-
 </style>

@@ -921,8 +921,10 @@
 					>
 				{/if}
 				{#if selectedParser === 'lr0' || selectedParser === 'lr1' || selectedParser === 'lalr1'}
-					<button class="tab" class:active={activeTab === 'goto'} onclick={() => (activeTab = 'goto')}
-						>AFN</button
+					<button
+						class="tab"
+						class:active={activeTab === 'goto'}
+						onclick={() => (activeTab = 'goto')}>AFN</button
 					>
 				{/if}
 				{#if selectedParser === 'descent' && astSvg}
@@ -945,11 +947,37 @@
 			</div>
 			<div class="export-actions">
 				<button class="export-btn png-btn" onclick={() => downloadTab('png')}>
-					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline
+							points="7 10 12 15 17 10"
+						/><line x1="12" y1="15" x2="12" y2="3" /></svg
+					>
 					PNG
 				</button>
 				<button class="export-btn pdf-btn" onclick={() => downloadTab('pdf')}>
-					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline
+							points="7 10 12 15 17 10"
+						/><line x1="12" y1="15" x2="12" y2="3" /></svg
+					>
 					PDF
 				</button>
 			</div>
@@ -1800,14 +1828,25 @@
 		border-radius: 4px;
 		background: #f9f9f9;
 		text-align: left;
-		font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+		font-family:
+			ui-monospace,
+			SFMono-Regular,
+			SF Mono,
+			Menlo,
+			Monaco,
+			Consolas,
+			'Liberation Mono',
+			'Courier New',
+			monospace;
 		font-size: 0.8rem;
 		color: #212529;
 		cursor: pointer;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		transition: background 0.2s, padding-left 0.2s;
+		transition:
+			background 0.2s,
+			padding-left 0.2s;
 	}
 
 	.history-item:hover {

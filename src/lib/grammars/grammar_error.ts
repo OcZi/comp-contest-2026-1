@@ -1,7 +1,6 @@
-
 export class GrammarError {
-    message: string
-    constructor(message: string = "Grammar error") {
-        this.message = message;
-    }
+	message: string;
+	constructor(message: string = 'Grammar error') {
+		this.message = message;
+	}
 }

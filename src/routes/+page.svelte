@@ -4,20 +4,26 @@
 
 <svelte:head>
 	<title>Grammar parser app</title>
-	<meta name="description" content="An interactive grammar parser for LL(1), LR(0), LR(1), and LALR(1) grammars." />
+	<meta
+		name="description"
+		content="An interactive grammar parser for LL(1), LR(0), LR(1), and LALR(1) grammars."
+	/>
 </svelte:head>
 
 <div class="container">
 	<div class="info-card">
 		<h1 class="title">Grammar parser app</h1>
 		<p class="description">
-			This application allows you to define, analyze, and parse Context-Free Grammars. You can write your grammar in raw BNF format or build it visually using productions.
+			This application allows you to define, analyze, and parse Context-Free Grammars. You can write
+			your grammar in raw BNF format or build it visually using productions.
 		</p>
-		
+
 		<div class="parser-types">
 			<ul>
 				<li><strong>LL(1)</strong> parser with First & Follow calculations.</li>
-				<li><strong>LR(0), LR(1), LALR(1)</strong> parsers with transition graphs (AFN) and action tables.</li>
+				<li>
+					<strong>LR(0), LR(1), LALR(1)</strong> parsers with transition graphs (AFN) and action tables.
+				</li>
 				<li><strong>Recursive Descent</strong> parsing with visual AST tree rendering.</li>
 			</ul>
 		</div>
@@ -29,7 +35,11 @@
 		<hr />
 
 		<div class="footer-about">
-			<p>Created by <a href="https://github.com/oczi" target="_blank" rel="noopener noreferrer">github.com/oczi</a></p>
+			<p>
+				Created by <a href="https://github.com/oczi" target="_blank" rel="noopener noreferrer"
+					>github.com/oczi</a
+				>
+			</p>
 		</div>
 	</div>
 </div>

@@ -1,12 +1,10 @@
 export interface Node {
-    name: string
-    children: Node[]
-
-    
+	name: string;
+	children: Node[];
 }
 
 export interface AST {
-    parent: Node
-    size: number
-    levels: number
+	parent: Node;
+	size: number;
+	levels: number;
 }
